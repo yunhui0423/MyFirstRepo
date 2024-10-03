@@ -1,0 +1,33 @@
+void handleRoot() {
+  // 回應 HTML 頁面，帶有按鈕和狀態顯示
+  server.send(200, "text/html", R"rawliteral(
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>ESP32 控制面板</title>
+      <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        button { padding: 10px 20px; font-size: 16px; }
+        #status { margin-top: 20px; font-size: 18px; }
+      </style>
+      <script>
+        function controlLED(state) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "/sw?led=" + state, true);
+          xhr.send();
+          // 更新狀態顯示
+          xhr.onload = function() {
+            document.getElementById('status').innerHTML = 'LED 狀態: ' + state;
+          }
+        }
+      </script>
+    </head>
+    <body>
+      <h1>ESP32 控制面板</h1>
+      <button onclick="controlLED('on')">開啟 LED</button>
+      <button onclick="controlLED('off')">關閉 LED</button>
+      <div id="status">LED 狀態: 關閉</div>
+    </body>
+    </html>
+  )rawliteral");
+}
